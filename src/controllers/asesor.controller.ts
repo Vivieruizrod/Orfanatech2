@@ -1,3 +1,4 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -19,11 +20,15 @@ import {
 } from '@loopback/rest';
 import {Asesor} from '../models';
 import {AsesorRepository} from '../repositories';
+import {AutenticacionService} from '../services';
+const fetch =  require('node-fetch');
 
 export class AsesorController {
   constructor(
     @repository(AsesorRepository)
     public asesorRepository : AsesorRepository,
+    @service(AutenticacionService)
+    public autenticacion: AutenticacionService,
   ) {}
 
   @post('/asesors')
@@ -44,7 +49,24 @@ export class AsesorController {
     })
     asesor: Omit<Asesor, 'id'>,
   ): Promise<Asesor> {
-    return this.asesorRepository.create(asesor);
+    //
+    //creacion y cifrado de la contraseña del asesor
+    let clave = this.autenticacion.generarclave();
+    let claveCifrada = this.autenticacion.cifrarClave(clave);
+    asesor.clave = claveCifrada;
+
+    let AsesorCreado = await this.asesorRepository.create(asesor);
+
+    //envio de notificacion de creacion del perfil del asesor con la contraseña y el usuario
+    let destino = asesor.correo;
+    let asunto = 'Bienvenido a Smart Vehicle'
+    let contenido = `<h2>Su registro a Smart Vehicle ha sido exitoso</h2><p>Hola ${asesor.nombre} recuerda que tu usuario es tu correo electronico </p><p>tu usuario es: ${asesor.correo}</p><p>tu contraseña es: ${clave}</p>`;
+  fetch(`http://127.0.0.1:5000/email?destino=${destino}&asunto=${asunto}&contenido=${contenido}`)
+      .then((data: any)=> {
+        console.log(data);
+      });
+
+    return AsesorCreado;
   }
 
   @get('/asesors/count')
@@ -148,3 +170,7 @@ export class AsesorController {
     await this.asesorRepository.deleteById(id);
   }
 }
+function data(data: any, any: any) {
+  throw new Error('Function not implemented.');
+}
+
