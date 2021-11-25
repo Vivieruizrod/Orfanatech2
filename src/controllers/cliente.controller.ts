@@ -18,6 +18,7 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
+import {Llaves} from '../config/llaves';
 import {Cliente} from '../models';
 import {ClienteRepository} from '../repositories';
 import {AutenticacionService} from '../services';
@@ -57,7 +58,7 @@ export class ClienteController {
     let destino = cliente.correo;
       let asunto = 'Bienvenido a Smart Vehicle'
       let contenido = `<h2>Su registro a Smart Vehicle ha sido exitoso</h2><p>Hola ${cliente.nombre} recuerda que tu usuario es tu correo electronico </p><p>tu usuario es: ${cliente.correo}</p><p>tu contraseña es: ${clave}</p>`;
-      fetch(`http://127.0.0.1:5000/email?destino=${destino}&asunto=${asunto}&contenido=${contenido}`)
+      fetch(`${Llaves.urlServicioNotificaciones}/email?destino=${destino}&asunto=${asunto}&contenido=${contenido}`)
           .then((data: any)=> {
             console.log(data);
           });

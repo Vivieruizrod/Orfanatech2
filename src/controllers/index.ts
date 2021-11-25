@@ -16,3 +16,4 @@ export * from './administrador.controller';
 export * from './co-deudor.controller';
 export * from './vehiculo.controller';
 export * from './solicitud.controller';
+export * from './login.controller';
