@@ -1,5 +1,5 @@
 import {injectable, /* inject, */ BindingScope} from '@loopback/core';
-import {repository} from '@loopback/repository';
+import {Null, repository} from '@loopback/repository';
 import {Llaves} from '../config/llaves';
 import {Asesor} from '../models';
 import {AdministradorRepository, AsesorRepository, ClienteRepository} from '../repositories';
@@ -31,10 +31,10 @@ export class AutenticacionService {
     return claveCifrada;
   }
 
-  identificarUsuario(usuario:string, clave:string){
+  async identificarUsuario(usuario:string, clave:string){
     try {
+/*
 
-      let c = this.clienteRepository.findOne({where:{correo:usuario, clave:clave}});
       console.log(c)
       if (c){
         return c;
@@ -45,12 +45,42 @@ export class AutenticacionService {
       if(a){
         return a;
       }
+*/
+      let u= null;
+      let comparar = null;
+      let sw = true;
+      let i = 1;
+      while (sw){
+        if(i==1 && u==comparar){
+          u = this.clienteRepository.findOne({where:{correo:usuario, clave:clave}});
+          if(await u){
+          }else{
+            comparar=u;
+          }
+        }else if(i==2 && u==comparar){
+          u = this.administradorRepository.findOne({where:{correo:usuario, clave:clave}});
+          if(await u){
+          }else{
+            comparar=u;
+          }
+        }else if (i==3 && u==comparar){
+          u = this.asesorRepository.findOne({where:{correo:usuario, clave:clave}});
+          if(await u){
+          }else{
+            comparar=u;
+          }
+        }
+        console.log(typeof u);
 
-      let u = this.asesorRepository.findOne({where:{correo:usuario, clave:clave}});
+        if(i==3){
+          sw=false;
+        }
+        i++;
+      }
+
       if(u){
         return u;
       }
-
       return false;
 
     } catch (error) {
