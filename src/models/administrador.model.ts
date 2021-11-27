@@ -1,6 +1,7 @@
 import {Entity, hasMany, model, property} from '@loopback/repository';
 import {Asesor} from './asesor.model';
 
+//Este es un comentario de prueba
 @model()
 export class Administrador extends Entity {
   @property({
