@@ -33,39 +33,32 @@ export class AutenticacionService {
 
   async identificarUsuario(usuario:string, clave:string){
     try {
-/*
-
-      console.log(c)
-      if (c){
-        return c;
-      }
-
-      let a = this.administradorRepository.findOne({where:{correo:usuario, clave:clave}});
-      console.log(a)
-      if(a){
-        return a;
-      }
-*/
       let u= null;
+      let tipo = "";
       let comparar = null;
       let sw = true;
       let i = 1;
       while (sw){
         if(i==1 && u==comparar){
-          u = this.clienteRepository.findOne({where:{correo:usuario, clave:clave}});
+          u = this.clienteRepository.findOne({where:{correo:usuario, clave:this.cifrarClave(clave)}});
           if(await u){
+
+            tipo='Cliente';
+
           }else{
             comparar=u;
           }
         }else if(i==2 && u==comparar){
-          u = this.administradorRepository.findOne({where:{correo:usuario, clave:clave}});
+          u = this.administradorRepository.findOne({where:{correo:usuario, clave:this.cifrarClave(clave)}});
           if(await u){
+            tipo='Administrador';
           }else{
             comparar=u;
           }
         }else if (i==3 && u==comparar){
-          u = this.asesorRepository.findOne({where:{correo:usuario, clave:clave}});
+          u = this.asesorRepository.findOne({where:{correo:usuario, clave:this.cifrarClave(clave)}});
           if(await u){
+            tipo='Asesor';
           }else{
             comparar=u;
           }
@@ -77,6 +70,7 @@ export class AutenticacionService {
         }
         i++;
       }
+
 
       if(u){
         return u;
@@ -91,13 +85,68 @@ export class AutenticacionService {
 
   }
 
-  generarTokenJWT(usuario:any){
+  async identificarTipoUsuario(usuario:string, clave:string){
+    try {
+      let u= null;
+      let tipo = "";
+      let comparar = null;
+      let sw = true;
+      let i = 1;
+      while (sw){
+        if(i==1 && u==comparar){
+          u = this.clienteRepository.findOne({where:{correo:usuario, clave:this.cifrarClave(clave)}});
+          if(await u){
+
+            tipo='Cliente';
+
+          }else{
+            comparar=u;
+          }
+        }else if(i==2 && u==comparar){
+          u = this.administradorRepository.findOne({where:{correo:usuario, clave:this.cifrarClave(clave)}});
+          if(await u){
+            tipo='Administrador';
+          }else{
+            comparar=u;
+          }
+        }else if (i==3 && u==comparar){
+          u = this.asesorRepository.findOne({where:{correo:usuario, clave:this.cifrarClave(clave)}});
+          if(await u){
+            tipo='Asesor';
+          }else{
+            comparar=u;
+          }
+        }
+        console.log(typeof u);
+
+        if(i==3){
+          sw=false;
+        }
+        i++;
+      }
+
+
+      if(u){
+        return tipo;
+      }
+      return false;
+
+    } catch (error) {
+      console.log(error)
+      return false
+
+    }
+
+  }
+
+  generarTokenJWT(usuario:any,tipo:string){
     let token = jwt.sign({
       data:{
-        id: usuario.id,
-        nombre: usuario.nombre,
-        apellido: usuario.apellido,
-        correo:usuario.correo
+        id: usuario.id.toString(),
+        nombre: usuario.nombre.toString(),
+        apellido: usuario.apellido.toString(),
+        correo:usuario.correo.toString(),
+        tipo: tipo
       }
     },
     Llaves.claveJWT)

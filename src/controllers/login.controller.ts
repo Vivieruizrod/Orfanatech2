@@ -49,17 +49,20 @@ export class LoginController {
      @requestBody() credenciales: Credenciales
   ){
     let u = await this.autenticacion.identificarUsuario(credenciales.usuario, credenciales.clave);
-    console.log(u)
+    let tipo= await this.autenticacion.identificarTipoUsuario(credenciales.usuario, credenciales.clave);
     if(u){
-      let token = this.autenticacion.generarTokenJWT(u);
+      let token = this.autenticacion.generarTokenJWT(u,tipo.toString());
+      
       return {
-        datos:{
+        dat:{
           nombre:u.nombre,
           apellido: u.apellido,
           id:u.id,
           correo:u.correo,
-          clave: u.clave
-        }
+          clave:u.clave,
+          tipo: tipo
+        },
+        token:token
       }
     }else{
       throw new HttpErrors[401]("Datos incorrectos");
