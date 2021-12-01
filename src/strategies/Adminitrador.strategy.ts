@@ -1,13 +1,12 @@
 import {AuthenticationStrategy} from '@loopback/authentication';
 import {service} from '@loopback/core';
-import {HttpErrors} from '@loopback/rest';
+import {HttpErrors,Request} from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
-import {Request} from 'express';
 import parseBearerToken from 'parse-bearer-token';
 import {AutenticacionService} from '../services';
 
 export class EstrategiaAdministrador implements AuthenticationStrategy{
-  name: string = 'admin';
+  name: string = 'Administrador';
 
   constructor(
     @service (AutenticacionService)
@@ -18,9 +17,24 @@ export class EstrategiaAdministrador implements AuthenticationStrategy{
     let token = parseBearerToken(request);
     if(token){
       let datos = this.autenticacionService.Validartoken(token);
-      return undefined
+      if(datos){
+        if(datos.data.tipo=="Administrador"){
+          let perfil : UserProfile = Object.assign({
+            nombre: datos.data.nombre,
+            apellido: datos.data.apellido,
+            id: datos.data.id,
+            correo: datos.data.correo,
+            clave: datos.data.clave,
+            tipo: datos.data.tipo
+          });
+          return perfil;
+        }
+      }else{
+        throw new HttpErrors [401]("Token no valido");
+      }
+
     }else{
-      throw new HttpErrors [401]("Solicitud sin token")
+      throw new HttpErrors [401]("Solicitud sin token");
     }
   }
 

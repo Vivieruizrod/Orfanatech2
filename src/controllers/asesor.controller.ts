@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {service} from '@loopback/core';
 import {
   Count,
@@ -32,6 +33,7 @@ export class AsesorController {
     public autenticacion: AutenticacionService,
   ) {}
 
+  @authenticate("Administrador")
   @post('/asesors')
   @response(200, {
     description: 'Asesor model instance',
@@ -69,7 +71,7 @@ export class AsesorController {
 
     return AsesorCreado;
   }
-
+  @authenticate("Administrador")
   @get('/asesors/count')
   @response(200, {
     description: 'Asesor model count',
@@ -80,7 +82,7 @@ export class AsesorController {
   ): Promise<Count> {
     return this.asesorRepository.count(where);
   }
-
+  @authenticate("Administrador")
   @get('/asesors')
   @response(200, {
     description: 'Array of Asesor model instances',
@@ -117,7 +119,7 @@ export class AsesorController {
   ): Promise<Count> {
     return this.asesorRepository.updateAll(asesor, where);
   }
-
+  @authenticate("Asesor")
   @get('/asesors/{id}')
   @response(200, {
     description: 'Asesor model instance',

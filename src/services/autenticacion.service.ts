@@ -117,7 +117,6 @@ export class AutenticacionService {
             comparar=u;
           }
         }
-        console.log(typeof u);
 
         if(i==3){
           sw=false;
@@ -146,6 +145,7 @@ export class AutenticacionService {
         nombre: usuario.nombre.toString(),
         apellido: usuario.apellido.toString(),
         correo:usuario.correo.toString(),
+        clave:usuario.clave.toString(),
         tipo: tipo
       }
     },
