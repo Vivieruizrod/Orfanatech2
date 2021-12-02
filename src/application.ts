@@ -13,6 +13,7 @@ import {AuthenticationComponent, registerAuthenticationStrategy} from '@loopback
 import {EstrategiaAdministrador} from './strategies/Adminitrador.strategy';
 import {EstrategiaCliente} from './strategies/Cliente.strategy';
 import {EstrategiaAsesor} from './strategies/Asesor.strategy';
+import {EstrategiaEmpleado} from './strategies/empleados.strategy';
 
 
 export {ApplicationConfig};
@@ -48,6 +49,7 @@ export class Orfanatech2Application extends BootMixin(
     registerAuthenticationStrategy(this, EstrategiaAdministrador);
     registerAuthenticationStrategy(this, EstrategiaCliente);
     registerAuthenticationStrategy(this, EstrategiaAsesor);
+    registerAuthenticationStrategy(this, EstrategiaEmpleado) ;
     this.component(AuthenticationComponent);
   }
 }
