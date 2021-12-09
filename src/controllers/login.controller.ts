@@ -38,7 +38,7 @@ export class LoginController {
     public autenticacion: AutenticacionService,
   ) {}
 
-  @post('/identificarPesona',{
+  @post('/identificarPersona',{
     responses:{
       '200':{
         description: 'Identificar Usuarios'
@@ -52,7 +52,7 @@ export class LoginController {
     let tipo= await this.autenticacion.identificarTipoUsuario(credenciales.usuario, credenciales.clave);
     if(u){
       let token = this.autenticacion.generarTokenJWT(u,tipo.toString());
-      
+
       return {
         dat:{
           nombre:u.nombre,

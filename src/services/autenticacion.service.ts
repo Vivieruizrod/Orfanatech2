@@ -63,7 +63,7 @@ export class AutenticacionService {
             comparar=u;
           }
         }
-        console.log(typeof u);
+        
 
         if(i==3){
           sw=false;
